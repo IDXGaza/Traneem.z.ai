@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    function isSignedIn() { return request.auth != null; }
+    function isValidId(id) { return id is string && id.size() <= 256; }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    
+    function isValidTimestamp(ts) {
+      return ts.keys().hasAll(['id', 'time', 'label'])
+             && ts.id is string && ts.id.size() <= 64 && ts.id.matches('^[a-zA-Z0-9_\\-]+$')
+             && (ts.time is number || ts.time is string)
+             && ts.label is string && ts.label.size() <= 200;
+    }
+    
+    function isValidTrack(data) {
+      return data.keys().hasAll(['userId', 'name', 'artist', 'duration', 'order'])
+             && data.userId == request.auth.uid
+             && data.name is string && data.name.size() <= 500
+             && data.artist is string && data.artist.size() <= 500
+             && (data.duration is number || data.duration is string)
+             && (data.order is number || data.order is string)
+             && (!('audioUrl' in data) || data.audioUrl == null || (data.audioUrl is string && data.audioUrl.size() <= 1000))
+             && (!('coverUrl' in data) || data.coverUrl == null || (data.coverUrl is string && data.coverUrl.size() <= 1000))
+             && (!('coverStorageUrl' in data) || data.coverStorageUrl == null || (data.coverStorageUrl is string && data.coverStorageUrl.size() <= 1000))
+             && (!('id' in data) || (data.id is string && data.id.size() <= 128))
+             && (!('isFavorite' in data) || data.isFavorite is bool)
+             && (!('playbackRate' in data) || (data.playbackRate is number || data.playbackRate is string))
+             && (!('timestamps' in data) || (data.timestamps is list && data.timestamps.size() <= 100 && (data.timestamps.size() == 0 || isValidTimestamp(data.timestamps[0]))));
+    }
+    
+    match /users/{userId}/tracks/{trackId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isSignedIn() 
+                     && request.auth.uid == userId 
+                     && isValidId(userId) 
+                     && isValidId(trackId) 
+                     && isValidTrack(incoming());
+      allow update: if isSignedIn() 
+                     && request.auth.uid == userId
+                     && incoming().userId == existing().userId
+                     && isValidTrack(incoming());
+      allow delete: if isSignedIn() && request.auth.uid == userId;
+    }
+  }
+}

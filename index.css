@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+/* Local Cairo font - works offline */
+@font-face {
+  font-family: 'Cairo';
+  src: url('/fonts/cairo-variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-cairo: "Cairo", "Noto Sans Arabic", "DejaVu Sans", sans-serif;
+}
+
+body {
+  font-family: var(--font-cairo);
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior-y: none;
+  background-color: #f0f4f5;
+}
+
+/* الوضع الداكن */
+html.dark {
+  background-color: #020617;
+  color: #f1f5f9;
+}
+
+/* الوضع الفاتح */
+html.light {
+  background-color: #f0f4f5;
+  color: #1e293b;
+}
+
+.dragging {
+  opacity: 0.5;
+  transform: scale(0.98);
+  background-color: rgba(77, 168, 171, 0.1) !important;
+}
+
+/* Watercolor backgrounds */
+.watercolor-bg-light {
+  background: linear-gradient(135deg, #e8f4f5 0%, #f0f7f8 25%, #f5f0f0 50%, #f0f5f4 75%, #eaf3f4 100%);
+}
+
+.watercolor-bg-dark {
+  background: linear-gradient(135deg, #0f172a 0%, #020617 25%, #0f172a 50%, #020617 75%, #0f172a 100%);
+}
+
+/* Scrollbar styling */
+.scroll-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(77, 168, 171, 0.2);
+  border-radius: 4px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(77, 168, 171, 0.4);
+}

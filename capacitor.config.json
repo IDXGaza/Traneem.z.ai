@@ -1,0 +1,8 @@
+{
+  "appId": "com.idxgaza.traneem",
+  "appName": "ترانيم",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

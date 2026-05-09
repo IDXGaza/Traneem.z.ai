@@ -1,0 +1,42 @@
+{
+  "entities": {
+    "Track": {
+      "title": "Track",
+      "description": "An audio track with timestamps",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "artist": { "type": "string" },
+        "audioUrl": { "type": "string" },
+        "coverUrl": { "type": "string" },
+        "isFavorite": { "type": "boolean" },
+        "timestamps": { 
+          "type": "array",
+          "items": { "$ref": "#/entities/Timestamp" }
+        },
+        "duration": { "type": "number" },
+        "playbackRate": { "type": "number" },
+        "order": { "type": "number" }
+      },
+      "required": ["userId", "name", "artist", "duration", "order"]
+    },
+    "Timestamp": {
+      "title": "Timestamp",
+      "description": "A timestamp marker in a track",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "time": { "type": "number" },
+        "label": { "type": "string" }
+      },
+      "required": ["id", "time", "label"]
+    }
+  },
+  "firestore": {
+    "users/{userId}/tracks/{trackId}": {
+      "schema": { "$ref": "#/entities/Track" },
+      "description": "A user's tracks"
+    }
+  }
+}
